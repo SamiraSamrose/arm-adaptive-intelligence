@@ -1,0 +1,34 @@
+{
+  "models": [
+    {
+      "name": "MobileNetV2",
+      "filename": "mobilenet_v2.onnx",
+      "format": "onnx",
+      "size_mb": 14.2,
+      "input_shape": [1, 3, 224, 224],
+      "output_shape": [1, 1000],
+      "description": "MobileNetV2 image classification model",
+      "source": "https://github.com/onnx/models"
+    },
+    {
+      "name": "ResNet18",
+      "filename": "resnet18.onnx",
+      "format": "onnx",
+      "size_mb": 44.7,
+      "input_shape": [1, 3, 224, 224],
+      "output_shape": [1, 1000],
+      "description": "ResNet18 image classification model",
+      "source": "https://github.com/onnx/models"
+    },
+    {
+      "name": "TinyBERT",
+      "filename": "tinybert.onnx",
+      "format": "onnx",
+      "size_mb": 54.3,
+      "input_shape": [1, 128],
+      "output_shape": [1, 128, 312],
+      "description": "TinyBERT for text embedding",
+      "source": "https://huggingface.co/models"
+    }
+  ]
+}
