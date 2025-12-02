@@ -1,0 +1,20 @@
+compression:
+  quantization_bits: [4, 3, 2]
+  pruning_ratio: 0.3
+  distillation_temperature: 2.0
+  target_platforms: ["arm_neon", "arm_npu", "arm_cpu"]
+
+optimization:
+  batch_size: 1
+  use_operator_fusion: true
+  use_kernel_optimization: true
+  enable_mixed_precision: true
+
+benchmarking:
+  warmup_iterations: 10
+  test_iterations: 100
+  metrics: ["latency", "throughput", "memory", "power"]
+
+export:
+  formats: ["tflite", "coreml", "onnx"]
+  target_devices: ["mobile", "iot", "wearable"]

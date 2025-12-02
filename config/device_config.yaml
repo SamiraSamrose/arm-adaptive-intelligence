@@ -1,0 +1,14 @@
+device:
+  detection: "auto"
+  arm_architecture: ["cortex-a", "cortex-m", "neoverse"]
+  compute_units: ["cpu", "gpu", "npu"]
+  
+profiling:
+  sample_rate_hz: 100
+  thermal_threshold_celsius: 45
+  memory_limit_mb: 512
+  
+power:
+  battery_threshold_percent: 20
+  low_power_mode: true
+  adaptive_scheduling: true

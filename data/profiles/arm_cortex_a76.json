@@ -1,0 +1,48 @@
+{
+  "device_name": "ARM Cortex-A76",
+  "architecture": "ARMv8.2-A",
+  "cpu": {
+    "cores": 8,
+    "big_cores": 4,
+    "little_cores": 4,
+    "max_frequency_ghz": 2.84,
+    "cache_l1_kb": 64,
+    "cache_l2_kb": 512,
+    "cache_l3_kb": 2048,
+    "features": ["NEON", "FP16", "ASIMD"]
+  },
+  "gpu": {
+    "model": "ARM Mali-G76",
+    "cores": 12,
+    "max_frequency_mhz": 800,
+    "compute_units": 12,
+    "fp16_support": true
+  },
+  "npu": {
+    "available": true,
+    "model": "ARM Ethos-N78",
+    "tops": 4.0,
+    "int8_tops": 8.0,
+    "supported_ops": ["conv2d", "depthwise_conv", "fully_connected", "pooling"]
+  },
+  "memory": {
+    "ram_gb": 8,
+    "bandwidth_gbps": 34.1,
+    "type": "LPDDR5"
+  },
+  "thermal": {
+    "max_safe_temp_c": 45.0,
+    "throttle_temp_c": 42.0,
+    "critical_temp_c": 50.0
+  },
+  "power": {
+    "tdp_watts": 5.0,
+    "idle_watts": 0.5,
+    "max_watts": 7.5
+  },
+  "benchmarks": {
+    "geekbench_single": 850,
+    "geekbench_multi": 2950,
+    "mlperf_score": 234
+  }
+}

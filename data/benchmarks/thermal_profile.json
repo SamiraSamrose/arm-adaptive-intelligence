@@ -1,0 +1,52 @@
+{
+  "benchmark_name": "Thermal Profile During Continuous Inference",
+  "device": "ARM Cortex-A76 Octa-Core",
+  "ambient_temperature_c": 25.0,
+  "thermal_data": [
+    {
+      "time_seconds": 0,
+      "cpu_temp_c": 32.0,
+      "gpu_temp_c": 30.5,
+      "battery_temp_c": 28.0,
+      "throttling": false
+    },
+    {
+      "time_seconds": 60,
+      "cpu_temp_c": 38.5,
+      "gpu_temp_c": 36.2,
+      "battery_temp_c": 31.5,
+      "throttling": false
+    },
+    {
+      "time_seconds": 120,
+      "cpu_temp_c": 42.8,
+      "gpu_temp_c": 40.1,
+      "battery_temp_c": 34.2,
+      "throttling": false
+    },
+    {
+      "time_seconds": 180,
+      "cpu_temp_c": 45.3,
+      "gpu_temp_c": 43.5,
+      "battery_temp_c": 36.8,
+      "throttling": true,
+      "cpu_frequency_reduction_percent": 15
+    },
+    {
+      "time_seconds": 240,
+      "cpu_temp_c": 46.7,
+      "gpu_temp_c": 44.8,
+      "battery_temp_c": 38.5,
+      "throttling": true,
+      "cpu_frequency_reduction_percent": 25
+    },
+    {
+      "time_seconds": 300,
+      "cpu_temp_c": 47.2,
+      "gpu_temp_c": 45.3,
+      "battery_temp_c": 39.7,
+      "throttling": true,
+      "cpu_frequency_reduction_percent": 30
+    }
+  ]
+}

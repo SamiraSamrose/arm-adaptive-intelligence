@@ -1,0 +1,18 @@
+platform :ios, '14.0'
+
+target 'ARMIntelligence' do
+  # Comment the next line if don't want to use dynamic frameworks
+  use_frameworks!
+
+  # Pods for ARMIntelligence
+  pod 'TensorFlowLiteSwift', '~> 2.13.0'
+  pod 'TensorFlowLiteObjC', '~> 2.13.0'
+  
+  target 'ARMIntelligenceTests' do
+    inherit! :search_paths
+  end
+
+  target 'ARMIntelligenceUITests' do
+  end
+
+end

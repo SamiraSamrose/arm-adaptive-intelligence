@@ -1,0 +1,58 @@
+{
+  "benchmark_name": "Quantization Accuracy vs Speed",
+  "date": "2024-01-15",
+  "models": [
+    {
+      "model_name": "MobileNetV2",
+      "fp32": {
+        "accuracy": 71.8,
+        "latency_ms": 12.5,
+        "size_mb": 14.2
+      },
+      "int8": {
+        "accuracy": 71.2,
+        "latency_ms": 8.3,
+        "size_mb": 3.6,
+        "accuracy_drop": 0.6
+      },
+      "int4": {
+        "accuracy": 69.5,
+        "latency_ms": 5.1,
+        "size_mb": 1.8,
+        "accuracy_drop": 2.3
+      },
+      "int3": {
+        "accuracy": 67.8,
+        "latency_ms": 4.2,
+        "size_mb": 1.4,
+        "accuracy_drop": 4.0
+      },
+      "int2": {
+        "accuracy": 64.1,
+        "latency_ms": 3.5,
+        "size_mb": 0.9,
+        "accuracy_drop": 7.7
+      }
+    },
+    {
+      "model_name": "ResNet50",
+      "fp32": {
+        "accuracy": 76.1,
+        "latency_ms": 45.2,
+        "size_mb": 97.8
+      },
+      "int8": {
+        "accuracy": 75.8,
+        "latency_ms": 28.7,
+        "size_mb": 24.5,
+        "accuracy_drop": 0.3
+      },
+      "int4": {
+        "accuracy": 74.2,
+        "latency_ms": 17.3,
+        "size_mb": 12.3,
+        "accuracy_drop": 1.9
+      }
+    }
+  ]
+}

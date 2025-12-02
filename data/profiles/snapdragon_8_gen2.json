@@ -1,0 +1,49 @@
+{
+  "device_name": "Qualcomm Snapdragon 8 Gen 2",
+  "architecture": "ARMv9-A",
+  "cpu": {
+    "cores": 8,
+    "prime_cores": 1,
+    "performance_cores": 4,
+    "efficiency_cores": 3,
+    "max_frequency_ghz": 3.36,
+    "cache_l1_kb": 64,
+    "cache_l2_kb": 512,
+    "cache_l3_kb": 8192,
+    "features": ["NEON", "FP16", "SVE2"]
+  },
+  "gpu": {
+    "model": "Adreno 740",
+    "max_frequency_mhz": 680,
+    "compute_units": 6,
+    "fp16_support": true,
+    "vulkan_support": true
+  },
+  "npu": {
+    "available": true,
+    "model": "Hexagon DSP",
+    "tops": 17.0,
+    "int8_tops": 34.0,
+    "tensor_accelerator": true
+  },
+  "memory": {
+    "ram_gb": 12,
+    "bandwidth_gbps": 51.2,
+    "type": "LPDDR5X"
+  },
+  "thermal": {
+    "max_safe_temp_c": 45.0,
+    "throttle_temp_c": 42.5,
+    "critical_temp_c": 50.0
+  },
+  "power": {
+    "tdp_watts": 7.0,
+    "idle_watts": 0.4,
+    "max_watts": 9.5
+  },
+  "benchmarks": {
+    "geekbench_single": 1524,
+    "geekbench_multi": 4597,
+    "mlperf_score": 412
+  }
+}

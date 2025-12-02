@@ -1,0 +1,39 @@
+{
+  "device_name": "Raspberry Pi 4 Model B",
+  "architecture": "ARMv8-A",
+  "cpu": {
+    "cores": 4,
+    "model": "Cortex-A72",
+    "max_frequency_ghz": 1.5,
+    "cache_l1_kb": 48,
+    "cache_l2_kb": 1024,
+    "features": ["NEON", "FP16"]
+  },
+  "gpu": {
+    "model": "VideoCore VI",
+    "max_frequency_mhz": 500,
+    "opencl_support": true
+  },
+  "npu": {
+    "available": false
+  },
+  "memory": {
+    "ram_gb": 8,
+    "bandwidth_gbps": 12.8,
+    "type": "LPDDR4"
+  },
+  "thermal": {
+    "max_safe_temp_c": 70.0,
+    "throttle_temp_c": 80.0,
+    "critical_temp_c": 85.0
+  },
+  "power": {
+    "tdp_watts": 15.0,
+    "idle_watts": 3.4,
+    "max_watts": 18.0
+  },
+  "benchmarks": {
+    "geekbench_single": 183,
+    "geekbench_multi": 635
+  }
+}

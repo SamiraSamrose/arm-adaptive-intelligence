@@ -1,0 +1,39 @@
+{
+  "benchmark_name": "Battery Consumption During AI Tasks",
+  "device": "ARM-based Smartphone",
+  "battery_capacity_mah": 4000,
+  "measurements": [
+    {
+      "task": "image_classification_mobilenet",
+      "duration_minutes": 10,
+      "battery_drain_percent": 2.3,
+      "avg_power_mw": 220,
+      "temperature_increase_c": 3.5,
+      "inferences_performed": 48000
+    },
+    {
+      "task": "object_detection_yolo",
+      "duration_minutes": 10,
+      "battery_drain_percent": 4.1,
+      "avg_power_mw": 340,
+      "temperature_increase_c": 5.2,
+      "inferences_performed": 17280
+    },
+    {
+      "task": "text_embedding_bert",
+      "duration_minutes": 10,
+      "battery_drain_percent": 3.7,
+      "avg_power_mw": 380,
+      "temperature_increase_c": 4.8,
+      "inferences_performed": 6720
+    },
+    {
+      "task": "idle",
+      "duration_minutes": 10,
+      "battery_drain_percent": 0.3,
+      "avg_power_mw": 15,
+      "temperature_increase_c": 0.0,
+      "inferences_performed": 0
+    }
+  ]
+}

@@ -1,0 +1,158 @@
+package com.arm.adaptiveintelligence
+
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Bundle
+import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import kotlinx.coroutines.*
+
+class DashboardActivity : AppCompatActivity() {
+    
+    private lateinit var engine: ARMEngine
+    private lateinit var statusText: TextView
+    private lateinit var cpuUsageText: TextView
+    private lateinit var memoryUsageText: TextView
+    private lateinit var batteryLevelText: TextView
+    private lateinit var temperatureText: TextView
+    
+    private lateinit var compressModelButton: Button
+    private lateinit var indexDocButton: Button
+    private lateinit var queryButton: Button
+    
+    private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
+    
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_dashboard)
+        
+        initializeViews()
+        requestPermissions()
+        initializeEngine()
+        startMetricsUpdate()
+    }
+    
+    private fun initializeViews() {
+        statusText = findViewById(R.id.status_text)
+        cpuUsageText = findViewById(R.id.cpu_usage_text)
+        memoryUsageText = findViewById(R.id.memory_usage_text)
+        batteryLevelText = findViewById(R.id.battery_level_text)
+        temperatureText = findViewById(R.id.temperature_text)
+        
+        compressModelButton = findViewById(R.id.compress_model_button)
+        indexDocButton = findViewById(R.id.index_doc_button)
+        queryButton = findViewById(R.id.query_button)
+        
+        compressModelButton.setOnClickListener {
+            compressModel()
+        }
+        
+        indexDocButton.setOnClickListener {
+            indexDocument()
+        }
+        
+        queryButton.setOnClickListener {
+            queryMemory()
+        }
+    }
+    
+    private fun requestPermissions() {
+        val permissions = arrayOf(
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.BLUETOOTH,
+            Manifest.permission.BLUETOOTH_ADMIN,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        )
+        
+        val permissionsToRequest = permissions.filter {
+            ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED
+        }
+        
+        if (permissionsToRequest.isNotEmpty()) {
+            ActivityCompat.requestPermissions(this, permissionsToRequest.toTypedArray(), 100)
+        }
+    }
+    
+    private fun initializeEngine() {
+        statusText.text = "Initializing ARM Engine..."
+        
+        engine = ARMEngine(this)
+        engine.initialize { success, message ->
+            statusText.text = message
+            
+            compressModelButton.isEnabled = success
+            indexDocButton.isEnabled = success
+            queryButton.isEnabled = success
+        }
+    }
+    
+    private fun startMetricsUpdate() {
+        scope.launch {
+            while (isActive) {
+                updateMetrics()
+                delay(1000)
+            }
+        }
+    }
+    
+    private fun updateMetrics() {
+        val metrics = engine.getPerformanceMetrics()
+        
+        if (metrics != null) {
+            cpuUsageText.text = "CPU: ${String.format("%.1f", metrics.cpuUsage)}%"
+            memoryUsageText.text = "Memory: ${metrics.memoryUsedMB}/${metrics.memoryMaxMB} MB"
+            batteryLevelText.text = "Battery: ${metrics.batteryPercent}%"
+            temperatureText.text = "Temp: ${String.format("%.1f", metrics.temperature)}°C"
+        }
+    }
+    
+    private fun compressModel() {
+        val modelPath = "${filesDir}/models/sample_model.onnx"
+        val outputPath = "${filesDir}/models/compressed_model.onnx"
+        
+        statusText.text = "Compressing model..."
+        
+        engine.compressModel(modelPath, outputPath, 4) { success, message ->
+            statusText.text = message
+            if (success) {
+                Toast.makeText(this, "Model compressed successfully", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+    
+    private fun indexDocument() {
+        val docPath = "${filesDir}/documents/sample.txt"
+        
+        statusText.text = "Indexing document..."
+        
+        engine.indexDocument(docPath) { success, message ->
+            statusText.text = message
+            if (success) {
+                Toast.makeText(this, "Document indexed successfully", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+    
+    private fun queryMemory() {
+        val query = "What is the main topic?"
+        
+        statusText.text = "Querying memory..."
+        
+        engine.queryMemory(query) { success, message ->
+            statusText.text = if (success) {
+                "Query Result:\n$message"
+            } else {
+                message
+            }
+        }
+    }
+    
+    override fun onDestroy() {
+        super.onDestroy()
+        scope.cancel()
+        engine.shutdown()
+    }
+}

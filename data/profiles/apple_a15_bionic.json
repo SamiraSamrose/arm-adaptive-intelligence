@@ -1,0 +1,48 @@
+{
+  "device_name": "Apple A15 Bionic",
+  "architecture": "ARMv8.5-A",
+  "cpu": {
+    "cores": 6,
+    "big_cores": 2,
+    "little_cores": 4,
+    "max_frequency_ghz": 3.23,
+    "cache_l1_kb": 192,
+    "cache_l2_kb": 12288,
+    "features": ["NEON", "FP16", "AMX"]
+  },
+  "gpu": {
+    "model": "Apple GPU (5-core)",
+    "cores": 5,
+    "max_frequency_mhz": 1338,
+    "compute_units": 5,
+    "fp16_support": true,
+    "metal_support": true
+  },
+  "npu": {
+    "available": true,
+    "model": "Apple Neural Engine (16-core)",
+    "tops": 15.8,
+    "int8_tops": 31.6,
+    "cores": 16
+  },
+  "memory": {
+    "ram_gb": 6,
+    "bandwidth_gbps": 51.2,
+    "type": "LPDDR4X"
+  },
+  "thermal": {
+    "max_safe_temp_c": 45.0,
+    "throttle_temp_c": 43.0,
+    "critical_temp_c": 50.0
+  },
+  "power": {
+    "tdp_watts": 6.0,
+    "idle_watts": 0.3,
+    "max_watts": 8.5
+  },
+  "benchmarks": {
+    "geekbench_single": 1734,
+    "geekbench_multi": 4818,
+    "mlperf_score": 487
+  }
+}
