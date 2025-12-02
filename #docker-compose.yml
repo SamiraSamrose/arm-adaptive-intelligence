@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  arm-engine:
+    build: .
+    container_name: arm-adaptive-intelligence
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./models:/app/models
+      - ./data:/app/data
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: python example_usage.py
+
+  python-bridge:
+    build: .
+    container_name: arm-python-bridge
+    ports:
+      - "5001:5000"
+    volumes:
+      - ./models:/app/models
+      - ./data:/app/data
+      - ./python_bridge:/app/python_bridge
+    working_dir: /app/python_bridge
+    command: python arm_engine_bridge.py
