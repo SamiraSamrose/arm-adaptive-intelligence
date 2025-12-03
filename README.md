@@ -74,7 +74,7 @@ metrics = inspector.profile_inference(compressed_model)
 
 1. Clone the repository
 ```bash
-git clone https://github.com/yourusername/arm-adaptive-intelligence.git
+git clone https://github.com/samirasamrose/arm-adaptive-intelligence.git
 cd arm-adaptive-intelligence
 ```
 
