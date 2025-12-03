@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARM Adaptive Intelligence Engine - Interactive Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .phone-frame {
+            width: 375px;
+            height: 812px;
+            background: #000;
+            border-radius: 40px;
+            padding: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        .phone-notch {
+            width: 200px;
+            height: 30px;
+            background: #000;
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 0 0 20px 20px;
+            z-index: 10;
+        }
+
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: #f5f5f7;
+            border-radius: 30px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .status-bar {
+            height: 44px;
+            background: #1a1a1a;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            color: #fff;
+            font-size: 12px;
+        }
+
+        .app-container {
+            height: calc(100% - 44px);
+            overflow-y: auto;
+            background: #f5f5f7;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 20px 20px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            padding: 15px;
+            background: #fff;
+            margin: -20px 15px 0;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .metric-label {
+            font-size: 11px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+
+        .metric-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .metric-unit {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(0,0,0,0.1);
+            border-radius: 3px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .section {
+            background: #fff;
+            margin: 15px;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #1a1a1a;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        .feature-card:active {
+            transform: translateY(0);
+        }
+
+        .feature-title {
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .feature-desc {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-idle {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-processing {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f5f7fa;
+            color: #333;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .log-container {
+            background: #1a1a1a;
+            color: #0f0;
+            padding: 15px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 10px;
+        }
+
+        .log-entry {
+            margin-bottom: 5px;
+            opacity: 0;
+            animation: fadeIn 0.3s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .timestamp {
+            color: #666;
+            margin-right: 10px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            max-width: 320px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #1a1a1a;
+        }
+
+        .modal-close {
+            float: right;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .chart-container {
+            margin-top: 15px;
+            height: 150px;
+            position: relative;
+        }
+
+        .chart-bar {
+            display: inline-block;
+            width: calc(25% - 5px);
+            background: linear-gradient(to top, #667eea 0%, #764ba2 100%);
+            margin-right: 5px;
+            border-radius: 5px 5px 0 0;
+            position: relative;
+            bottom: 0;
+            animation: growBar 0.5s ease forwards;
+        }
+
+        @keyframes growBar {
+            from { height: 0; }
+        }
+
+        .chart-label {
+            font-size: 10px;
+            text-align: center;
+            margin-top: 5px;
+            color: #666;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .slider-container {
+            margin: 20px 0;
+        }
+
+        .slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #ddd;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            cursor: pointer;
+        }
+
+        .slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            cursor: pointer;
+            border: none;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a1a1a;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 25px;
+            font-size: 14px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 2000;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .tab-container {
+            display: flex;
+            background: #f5f7fa;
+            border-radius: 10px;
+            padding: 5px;
+            margin-bottom: 15px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.2s ease;
+        }
+
+        .tab.active {
+            background: white;
+            color: #667eea;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-frame">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+            <div class="status-bar">
+                <div>
+                    <span id="time">9:41</span>
+                </div>
+                <div>
+                    <span id="battery">100%</span>
+                </div>
+            </div>
+
+            <div class="app-container">
+                <div class="header">
+                    <h1>ARM Adaptive Intelligence</h1>
+                    <p>Edge AI Performance Tuning</p>
+                </div>
+
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-label">CPU Usage</div>
+                        <div class="metric-value" id="cpu-value">0<span class="metric-unit">%</span></div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="cpu-progress" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Memory</div>
+                        <div class="metric-value" id="memory-value">0<span class="metric-unit">MB</span></div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="memory-progress" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Battery</div>
+                        <div class="metric-value" id="battery-value">100<span class="metric-unit">%</span></div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="battery-progress" style="width: 100%"></div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Temperature</div>
+                        <div class="metric-value" id="temp-value">32<span class="metric-unit">°C</span></div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="temp-progress" style="width: 35%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">Core Modules</div>
+                    
+                    <div class="feature-card" onclick="openModal('compressor')">
+                        <div class="feature-title">
+                            <span>Model Compressor</span>
+                            <span class="status-badge status-idle">Idle</span>
+                        </div>
+                        <div class="feature-desc">Quantize, prune, and distill models for ARM devices</div>
+                    </div>
+
+                    <div class="feature-card" onclick="openModal('inspector')">
+                        <div class="feature-title">
+                            <span>Runtime Inspector</span>
+                            <span class="status-badge status-active">Active</span>
+                        </div>
+                        <div class="feature-desc">Multi-agent profiling and diagnostics</div>
+                    </div>
+
+                    <div class="feature-card" onclick="openModal('memory')">
+                        <div class="feature-title">
+                            <span>Memory Engine</span>
+                            <span class="status-badge status-idle">Idle</span>
+                        </div>
+                        <div class="feature-desc">On-device RAG for semantic search</div>
+                    </div>
+
+                    <div class="feature-card" onclick="openModal('battery')">
+                        <div class="feature-title">
+                            <span>Battery Scheduler</span>
+                            <span class="status-badge status-active">Active</span>
+                        </div>
+                        <div class="feature-desc">ML-based power management</div>
+                    </div>
+
+                    <div class="feature-card" onclick="openModal('iot')">
+                        <div class="feature-title">
+                            <span>IoT Connector</span>
+                            <span class="status-badge status-idle">Idle</span>
+                        </div>
+                        <div class="feature-desc">BLE, Thread, Matter device integration</div>
+                    </div>
+
+                    <div class="feature-card" onclick="openModal('privacy')">
+                        <div class="feature-title">
+                            <span>Privacy Firewall</span>
+                            <span class="status-badge status-active">Active</span>
+                        </div>
+                        <div class="feature-desc">Sandboxed execution and policy enforcement</div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">System Log</div>
+                    <div class="log-container" id="log-container">
+                        <div class="log-entry">
+                            <span class="timestamp">[09:41:00]</span>
+                            <span>ARM Engine initialized</span>
+                        </div>
+                        <div class="log-entry">
+                            <span class="timestamp">[09:41:01]</span>
+                            <span>Runtime Inspector started</span>
+                        </div>
+                        <div class="log-entry">
+                            <span class="timestamp">[09:41:02]</span>
+                            <span>Privacy Firewall enabled</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="compressor-modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('compressor')">&times;</span>
+            <div class="modal-title">Model Compressor</div>
+            
+            <div class="input-group">
+                <label>Model Name</label>
+                <input type="text" id="model-name" value="MobileNetV2" placeholder="Enter model name">
+            </div>
+
+            <div class="input-group">
+                <label>Quantization Bits</label>
+                <select id="quant-bits">
+                    <option value="4">4-bit (Recommended)</option>
+                    <option value="3">3-bit</option>
+                    <option value="2">2-bit</option>
+                </select>
+            </div>
+
+            <div class="slider-container">
+                <label>Pruning Ratio: <span id="prune-value">30</span>%</label>
+                <input type="range" min="0" max="50" value="30" class="slider" id="prune-slider" oninput="updatePruneValue(this.value)">
+            </div>
+
+            <button class="btn btn-primary" onclick="compressModel()">Start Compression</button>
+
+            <div id="compression-result" style="display:none; margin-top:15px;">
+                <div class="chart-container">
+                    <div style="display: flex; align-items: flex-end; height: 100%;">
+                        <div style="flex: 1; text-align: center;">
+                            <div class="chart-bar" id="original-bar" style="height: 100px;"></div>
+                            <div class="chart-label">Original</div>
+                        </div>
+                        <div style="flex: 1; text-align: center;">
+                            <div class="chart-bar" id="compressed-bar" style="height: 25px;"></div>
+                            <div class="chart-label">Compressed</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 15px; font-size: 18px; font-weight: 700; color: #667eea;">
+                    Compression: <span id="compression-ratio">4.0</span>x
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="inspector-modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('inspector')">&times;</span>
+            <div class="modal-title">Runtime Inspector</div>
+            
+            <div class="tab-container">
+                <div class="tab active" onclick="switchTab('profile')">Profile</div>
+                <div class="tab" onclick="switchTab('thermal')">Thermal</div>
+                <div class="tab" onclick="switchTab('graph')">Graph</div>
+            </div>
+
+            <div id="profile-tab" class="tab-content active">
+                <div class="input-group">
+                    <label>Duration (seconds)</label>
+                    <input type="number" id="profile-duration" value="5" min="1" max="60">
+                </div>
+                <button class="btn btn-primary" onclick="startProfiling()">Start Profiling</button>
+                <div id="profile-result" style="display:none; margin-top:15px;">
+                    <div style="background: #f5f7fa; padding: 15px; border-radius: 10px;">
+                        <div style="margin-bottom: 10px;">
+                            <strong>CPU Usage:</strong> <span id="profile-cpu">45.2%</span>
+                        </div>
+                        <div style="margin-bottom: 10px;">
+                            <strong>GPU Usage:</strong> <span id="profile-gpu">62.8%</span>
+                        </div>
+                        <div style="margin-bottom: 10px;">
+                            <strong>NPU Usage:</strong> <span id="profile-npu">38.5%</span>
+                        </div>
+                        <div style="margin-bottom: 10px;">
+                            <strong>Memory:</strong> <span id="profile-mem">245 MB</span>
+                        </div>
+                        <div style="margin-bottom: 10px;">
+                            <strong>Bottleneck:</strong> <span id="profile-bottleneck" style="color: #667eea; font-weight: 600;">GPU</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="thermal-tab" class="tab-content">
+                <button class="btn btn-primary" onclick="monitorThermal()">Monitor Thermal</button>
+                <div id="thermal-result" style="display:none; margin-top:15px;">
+                    <div class="chart-container">
+                        <canvas id="thermal-chart" width="280" height="150"></canvas>
+                    </div>
+                    <div style="margin-top: 15px; background: #f5f7fa; padding: 15px; border-radius: 10px;">
+                        <div><strong>Status:</strong> <span id="thermal-status" style="color: green;">Normal</span></div>
+                        <div style="margin-top: 8px;"><strong>Max Temp:</strong> <span id="thermal-max">42.3°C</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="graph-tab" class="tab-content">
+                <button class="btn btn-primary" onclick="analyzeGraph()">Analyze Graph</button>
+                <div id="graph-result" style="display:none; margin-top:15px;">
+                    <div style="background: #f5f7fa; padding: 15px; border-radius: 10px; font-size: 13px;">
+                        <p style="margin-bottom: 10px;"><strong>Diagnosis:</strong></p>
+                        <p id="graph-diagnosis">Your model is bottlenecked by depthwise convolution operations. The attention mechanism consumes 35% of total execution time. Consider using fused kernels and operator fusion to reduce memory transfers.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="memory-modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('memory')">&times;</span>
+            <div class="modal-title">Memory Engine</div>
+            
+            <div class="tab-container">
+                <div class="tab active" onclick="switchTab('index')">Index</div>
+                <div class="tab" onclick="switchTab('query')">Query</div>
+                <div class="tab" onclick="switchTab('stats')">Stats</div>
+            </div>
+
+            <div id="index-tab" class="tab-content active">
+                <div class="input-group">
+                    <label>Document Type</label>
+                    <select id="doc-type">
+                        <option value="text">Text Document</option>
+                        <option value="pdf">PDF</option>
+                        <option value="image">Image</option>
+                        <option value="audio">Audio</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Document Name</label>
+                    <input type="text" id="doc-name" placeholder="Enter document name">
+                </div>
+                <button class="btn btn-primary" onclick="indexDocument()">Index Document</button>
+                <div id="index-result" style="display:none; margin-top:15px;">
+                    <div style="background: #d4edda; padding: 15px; border-radius: 10px; color: #155724;">
+                        Document indexed successfully!<br>
+                        <strong>ID:</strong> <span id="doc-id"></span><br>
+                        <strong>Chunks:</strong> <span id="doc-chunks"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="query-tab" class="tab-content">
+                <div class="input-group">
+                    <label>Query</label>
+                    <input type="text" id="query-text" placeholder="Ask a question...">
+                </div>
+                <button class="btn btn-primary" onclick="queryMemory()">Search</button>
+                <div id="query-result" style="display:none; margin-top:15px;">
+                    <div style="background: #f5f7fa; padding: 15px; border-radius: 10px; font-size: 13px;">
+                        <p><strong>Result:</strong></p>
+                        <p id="query-response" style="margin-top: 8px;"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="stats-tab" class="tab-content">
+                <button class="btn btn-primary" onclick="showMemoryStats()">Show Statistics</button>
+                <div id="stats-result" style="display:none; margin-top:15px;">
+                    <div style="background: #f5f7fa; padding: 15px; border-radius: 10px;">
+                        <div style="margin-bottom: 10px;">
+                            <strong>Total Documents:</strong> <span id="total-docs">0</span>
+                        </div>
+                        <div style="margin-bottom: 10px;">
+                            <strong>Total Chunks:</strong> <span id="total-chunks">0</span>
+                        </div>
+                        <div style="margin-bottom: 10px;">
+                            <strong>Storage Used:</strong> <span id="storage-used">0 MB</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="battery-modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('battery')">&times;</span>
+            <div class="modal-title">Battery Scheduler</div>
+            
+            <div class="input-group">
+                <label>Task Priority</label>
+                <select id="task-priority">
+                    <option value="normal">Normal</option>
+                    <option value="high">High</option>
+                    <option value="critical">Critical</option>
+                </select>
+            </div>
+
+            <div class="slider-container">
+                <label>Compute Intensity: <span id="compute-value">50</span>%</label>
+                <input type="range" min="0" max="100" value="50" class="slider" id="compute-slider" oninput="updateComputeValue(this.value)">
+            </div>
+
+            <button class="btn btn-primary" onclick="scheduleTask()">Schedule Task</button>
+
+            <div id="schedule-result" style="display:none; margin-top:15px;">
+                <div style="background: #f5f7fa; padding: 15px; border-radius: 10px;">
+                    <div style="margin-bottom: 10px;">
+                        <strong>Estimated Drain:</strong> <span id="est-drain">2.3%</span>
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <strong>Execution Time:</strong> <span id="exec-time">~5 minutes</span>
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <strong>Recommended:</strong> <span id="recommended" style="color: green;">Execute Now</span>
+                    </div>
+                    <div style="margin-top: 15px; padding: 10px; background: #fff3cd; border-radius: 8px; font-size: 12px;">
+                        <strong>Tip:</strong> <span id="battery-tip"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="iot-modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('iot')">&times;</span>
+            <div class="modal-title">IoT Connector</div>
+            
+            <div class="input-group">
+                <label>Protocol</label>
+                <select id="iot-protocol">
+                    <option value="BLE">Bluetooth Low Energy</option>
+                    <option value="Thread">Thread</option>
+                    <option value="Matter">Matter</option>
+                </select>
+            </div>
+
+            <button class="btn btn-primary" onclick="scanDevices()">Scan Devices</button>
+            <div id="iot-devices" style="display:none; margin-top:15px;">
+            <div style="font-weight: 600; margin-bottom: 10px;">Available Devices:</div>
+            <div id="device-list"></div>
+        </div>
+
+        <div id="sensor-data" style="display:none; margin-top:15px;">
+            <div style="font-weight: 600; margin-bottom: 10px;">Sensor Data:</div>
+            <div style="background: #f5f7fa; padding: 15px; border-radius: 10px; font-size: 13px;">
+                <div style="margin-bottom: 8px;"><strong>Accelerometer:</strong> X: <span id="accel-x">0.0</span>, Y: <span id="accel-y">0.0</span>, Z: <span id="accel-z">9.8</span></div>
+                <div style="margin-bottom: 8px;"><strong>Heart Rate:</strong> <span id="heart-rate">72</span> bpm</div>
+                <div><strong>Activity:</strong> <span id="activity">Standing</span></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="privacy-modal" class="modal">
+    <div class="modal-content">
+        <span class="modal-close" onclick="closeModal('privacy')">&times;</span>
+        <div class="modal-title">Privacy Firewall</div>
+        
+        <div style="background: #d4edda; padding: 15px; border-radius: 10px; margin-bottom: 15px; font-size: 13px; color: #155724;">
+            All AI operations are executed locally. Zero data leaves your device.
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #f5f7fa; border-radius: 8px; margin-bottom: 8px;">
+                <span>Local Processing Only</span>
+                <span style="color: green; font-weight: 600;">✓ Enabled</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #f5f7fa; border-radius: 8px; margin-bottom: 8px;">
+                <span>Network Access</span>
+                <span style="color: red; font-weight: 600;">✗ Blocked</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #f5f7fa; border-radius: 8px; margin-bottom: 8px;">
+                <span>Data Encryption</span>
+                <span style="color: green; font-weight: 600;">✓ Active</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #f5f7fa; border-radius: 8px;">
+                <span>Audit Logging</span>
+                <span style="color: green; font-weight: 600;">✓ Enabled</span>
+            </div>
+        </div>
+
+        <button class="btn btn-primary" onclick="runPrivacyAudit()">Run Privacy Audit</button>
+
+        <div id="privacy-result" style="display:none; margin-top:15px;">
+            <div style="background: #d4edda; padding: 15px; border-radius: 10px; color: #155724; font-size: 13px;">
+                <strong>Audit Complete:</strong><br>
+                No privacy violations detected.<br>
+                All operations comply with policies.
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+    // State management
+    const state = {
+        cpu: 0,
+        memory: 0,
+        battery: 100,
+        temperature: 32,
+        documents: 0,
+        chunks: 0,
+        connectedDevices: []
+    };
+
+    // Initialize
+    function init() {
+        updateTime();
+        setInterval(updateTime, 1000);
+        startMetricsSimulation();
+        addLog('System ready');
+    }
+
+    function updateTime() {
+        const now = new Date();
+        const hours = now.getHours().toString().padStart(2, '0');
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        document.getElementById('time').textContent = `${hours}:${minutes}`;
+    }
+
+    function startMetricsSimulation() {
+        setInterval(() => {
+            state.cpu = Math.floor(Math.random() * 60) + 20;
+            state.memory = Math.floor(Math.random() * 300) + 150;
+            state.temperature = 32 + Math.random() * 10;
+            
+            updateMetrics();
+        }, 2000);
+    }
+
+    function updateMetrics() {
+        document.getElementById('cpu-value').innerHTML = `${state.cpu}<span class="metric-unit">%</span>`;
+        document.getElementById('cpu-progress').style.width = `${state.cpu}%`;
+        
+        document.getElementById('memory-value').innerHTML = `${state.memory}<span class="metric-unit">MB</span>`;
+        document.getElementById('memory-progress').style.width = `${(state.memory / 512) * 100}%`;
+        
+        document.getElementById('battery-value').innerHTML = `${state.battery}<span class="metric-unit">%</span>`;
+        document.getElementById('battery-progress').style.width = `${state.battery}%`;
+        document.getElementById('battery').textContent = `${state.battery}%`;
+        
+        document.getElementById('temp-value').innerHTML = `${Math.floor(state.temperature)}<span class="metric-unit">°C</span>`;
+        document.getElementById('temp-progress').style.width = `${(state.temperature / 90) * 100}%`;
+    }
+
+    function addLog(message) {
+        const logContainer = document.getElementById('log-container');
+        const now = new Date();
+        const timestamp = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
+        
+        const entry = document.createElement('div');
+        entry.className = 'log-entry';
+        entry.innerHTML = `<span class="timestamp">[${timestamp}]</span><span>${message}</span>`;
+        
+        logContainer.appendChild(entry);
+        logContainer.scrollTop = logContainer.scrollHeight;
+    }
+
+    function showToast(message) {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.classList.add('show');
+        
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 3000);
+    }
+
+    function openModal(modalName) {
+        document.getElementById(`${modalName}-modal`).classList.add('active');
+    }
+
+    function closeModal(modalName) {
+        document.getElementById(`${modalName}-modal`).classList.remove('active');
+    }
+
+    function switchTab(tabName) {
+        const tabs = document.querySelectorAll('.tab');
+        const contents = document.querySelectorAll('.tab-content');
+        
+        tabs.forEach(tab => tab.classList.remove('active'));
+        contents.forEach(content => content.classList.remove('active'));
+        
+        event.target.classList.add('active');
+        document.getElementById(`${tabName}-tab`).classList.add('active');
+    }
+
+    // Model Compressor
+    function updatePruneValue(value) {
+        document.getElementById('prune-value').textContent = value;
+    }
+
+    function compressModel() {
+        const modelName = document.getElementById('model-name').value;
+        const bits = document.getElementById('quant-bits').value;
+        const pruneRatio = document.getElementById('prune-slider').value;
+        
+        addLog(`Compressing ${modelName}: ${bits}-bit quantization, ${pruneRatio}% pruning`);
+        showToast('Starting compression...');
+        
+        const btn = event.target;
+        btn.disabled = true;
+        btn.innerHTML = '<div class="loading-spinner"></div>';
+        
+        setTimeout(() => {
+            const ratio = (32 / parseInt(bits)).toFixed(1);
+            document.getElementById('compression-ratio').textContent = ratio;
+            document.getElementById('compression-result').style.display = 'block';
+            
+            btn.disabled = false;
+            btn.textContent = 'Start Compression';
+            
+            addLog(`Compression complete: ${ratio}x reduction`);
+            showToast(`Model compressed ${ratio}x`);
+        }, 2000);
+    }
+
+    // Runtime Inspector
+    function startProfiling() {
+        const duration = document.getElementById('profile-duration').value;
+        addLog(`Starting profiling for ${duration} seconds`);
+        showToast('Profiling...');
+        
+        const btn = event.target;
+        btn.disabled = true;
+        btn.innerHTML = '<div class="loading-spinner"></div>';
+        
+        setTimeout(() => {
+            document.getElementById('profile-cpu').textContent = `${(Math.random() * 30 + 40).toFixed(1)}%`;
+            document.getElementById('profile-gpu').textContent = `${(Math.random() * 40 + 50).toFixed(1)}%`;
+            document.getElementById('profile-npu').textContent = `${(Math.random() * 30 + 30).toFixed(1)}%`;
+            document.getElementById('profile-mem').textContent = `${Math.floor(Math.random() * 150 + 200)} MB`;
+            
+            const bottlenecks = ['CPU', 'GPU', 'NPU', 'Memory'];
+            document.getElementById('profile-bottleneck').textContent = bottlenecks[Math.floor(Math.random() * bottlenecks.length)];
+            
+            document.getElementById('profile-result').style.display = 'block';
+            
+            btn.disabled = false;
+            btn.textContent = 'Start Profiling';
+            
+            addLog('Profiling complete');
+            showToast('Profiling complete');
+        }, parseInt(duration) * 200);
+    }
+
+    function monitorThermal() {
+        addLog('Monitoring thermal conditions');
+        showToast('Monitoring thermal...');
+        
+        const btn = event.target;
+        btn.disabled = true;
+        btn.innerHTML = '<div class="loading-spinner"></div>';
+        
+        setTimeout(() => {
+            const canvas = document.getElementById('thermal-chart');
+            const ctx = canvas.getContext('2d');
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.strokeStyle = '#667eea';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            
+            for (let i = 0; i < 50; i++) {
+                const x = i * (canvas.width / 50);
+                const y = canvas.height - (30 + Math.random() * 50);
+                
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+            
+            ctx.stroke();
+            
+            const maxTemp = (Math.random() * 8 + 38).toFixed(1);
+            document.getElementById('thermal-max').textContent = `${maxTemp}°C`;
+            document.getElementById('thermal-status').textContent = maxTemp > 42 ? 'Warning' : 'Normal';
+            document.getElementById('thermal-status').style.color = maxTemp > 42 ? 'orange' : 'green';
+            
+            document.getElementById('thermal-result').style.display = 'block';
+            
+            btn.disabled = false;
+            btn.textContent = 'Monitor Thermal';
+            
+            addLog(`Thermal monitoring complete: max ${maxTemp}°C`);
+            showToast('Thermal monitoring complete');
+        }, 2000);
+    }
+
+    function analyzeGraph() {
+        addLog('Analyzing computation graph');
+        showToast('Analyzing graph...');
+        
+        const btn = event.target;
+        btn.disabled = true;
+        btn.innerHTML = '<div class="loading-spinner"></div>';
+        
+        setTimeout(() => {
+            const diagnoses = [
+                'Your model is bottlenecked by depthwise convolution operations. Consider using ARM NEON optimized kernels for 2x speedup.',
+                'Attention mechanism consumes 35% of execution time. Implement fused attention kernels to reduce memory transfers by 40%.',
+                'Memory bandwidth limits performance. Apply operator fusion to reduce data movement between layers.',
+                'GPU utilization is suboptimal. Enable batch processing and increase tensor sizes for better throughput.'
+            ];
+            
+            document.getElementById('graph-diagnosis').textContent = diagnoses[Math.floor(Math.random() * diagnoses.length)];
+            document.getElementById('graph-result').style.display = 'block';
+            
+            btn.disabled = false;
+            btn.textContent = 'Analyze Graph';
+            
+            addLog('Graph analysis complete');
+            showToast('Analysis complete');
+        }, 1500);
+    }
+
+    // Memory Engine
+    function indexDocument() {
+        const docType = document.getElementById('doc-type').value;
+        const docName = document.getElementById('doc-name').value;
+        
+        if (!docName) {
+            showToast('Please enter document name');
+            return;
+        }
+        
+        addLog(`Indexing ${docType}: ${docName}`);
+        showToast('Indexing document...');
+        
+        const btn = event.target;
+        btn.disabled = true;
+        btn.innerHTML = '<div class="loading-spinner"></div>';
+        
+        setTimeout(() => {
+            const docId = `doc_${state.documents}`;
+            const chunks = Math.floor(Math.random() * 20) + 5;
+            
+            document.getElementById('doc-id').textContent = docId;
+            document.getElementById('doc-chunks').textContent = chunks;
+            document.getElementById('index-result').style.display = 'block';
+            
+            state.documents++;
+            state.chunks += chunks;
+            
+            btn.disabled = false;
+            btn.textContent = 'Index Document';
+            
+            addLog(`Document indexed: ${docId} with ${chunks} chunks`);
+            showToast('Document indexed successfully');
+        }, 1500);
+    }
+
+    function queryMemory() {
+        const query = document.getElementById('query-text').value;
+        
+        if (!query) {
+            showToast('Please enter a query');
+            return;
+        }
+        
+        addLog(`Querying: ${query}`);
+        showToast('Searching...');
+        
+        const btn = event.target;
+        btn.disabled = true;
+        btn.innerHTML = '<div class="loading-spinner"></div>';
+        
+        setTimeout(() => {
+            const responses = [
+                'Based on your documents, the project focuses on edge AI optimization for ARM devices using quantization and pruning techniques.',
+                'The system implements multi-agent profiling to identify performance bottlenecks in neural network execution.',
+                'Retrieved context shows battery-aware scheduling reduces power consumption by deferring tasks to optimal windows.',
+                'Document analysis indicates privacy firewall enforces local-only processing without external data transmission.'
+            ];
+            
+            document.getElementById('query-response').textContent = responses[Math.floor(Math.random() * responses.length)];
+            document.getElementById('query-result').style.display = 'block';
+            
+            btn.disabled = false;
+            btn.textContent = 'Search';
+            
+            addLog('Query complete');
+            showToast('Search complete');
+        }, 1500);
+    }
+
+    function showMemoryStats() {
+        addLog('Retrieving memory statistics');
+        
+        const btn = event.target;
+        btn.disabled = true;
+        btn.innerHTML = '<div class="loading-spinner"></div>';
+        
+        setTimeout(() => {
+            document.getElementById('total-docs').textContent = state.documents;
+            document.getElementById('total-chunks').textContent = state.chunks;
+            document.getElementById('storage-used').textContent = `${(state.chunks * 0.5).toFixed(1)} MB`;
+            document.getElementById('stats-result').style.display = 'block';
+            
+            btn.disabled = false;
+            btn.textContent = 'Show Statistics';
+            
+            showToast('Statistics loaded');
+        }, 500);
+    }
+
+    // Battery Scheduler
+    function updateComputeValue(value) {
+        document.getElementById('compute-value').textContent = value;
+    }
+
+    function scheduleTask() {
+        const priority = document.getElementById('task-priority').value;
+        const compute = document.getElementById('compute-slider').value;
+        
+        addLog(`Scheduling ${priority} priority task (${compute}% compute)`);
+        showToast('Scheduling task...');
+        
+        const btn = event.target;
+        btn.disabled = true;
+        btn.innerHTML = '<div class="loading-spinner"></div>';
+        
+        setTimeout(() => {
+            const drain = (compute / 100 * 5).toFixed(1);
+            const time = Math.floor(compute / 20);
+            
+            document.getElementById('est-drain').textContent = `${drain}%`;
+            document.getElementById('exec-time').textContent = `~${time} minutes`;
+            
+            const shouldDefer = state.battery < 30 || state.temperature > 40;
+            document.getElementById('recommended').textContent = shouldDefer ? 'Defer Task' : 'Execute Now';
+            document.getElementById('recommended').style.color = shouldDefer ? 'orange' : 'green';
+            
+            const tips = [
+                'Device is charging - optimal time for heavy tasks',
+                'Battery level sufficient for execution',
+                'Consider waiting until device cools down',
+                'Low battery - task will be deferred automatically'
+            ];
+            
+            document.getElementById('battery-tip').textContent = tips[Math.floor(Math.random() * tips.length)];
+            document.getElementById('schedule-result').style.display = 'block';
+            
+            state.battery = Math.max(20, state.battery - parseFloat(drain));
+            updateMetrics();
+            
+            btn.disabled = false;
+            btn.textContent = 'Schedule Task';
+            
+            addLog(`Task scheduled: estimated ${drain}% drain`);
+            showToast('Task scheduled');
+        }, 1000);
+    }
+
+    // IoT Connector
+    function scanDevices() {
+        const protocol = document.getElementById('iot-protocol').value;
+        
+        addLog(`Scanning for ${protocol} devices`);
+        showToast('Scanning...');
+        
+        const btn = event.target;
+        btn.disabled = true;
+        btn.innerHTML = '<div class="loading-spinner"></div>';
+        
+        setTimeout(() => {
+            const devices = [
+                { name: 'Smart Watch', rssi: -45 },
+                { name: 'Fitness Band', rssi: -60 },
+                { name: 'Smart Glasses', rssi: -55 },
+                { name: 'Health Sensor', rssi: -70 }
+            ];
+            
+            const deviceList = document.getElementById('device-list');
+            deviceList.innerHTML = '';
+            
+            devices.forEach(device => {
+                const div = document.createElement('div');
+                div.style.cssText = 'padding: 12px; background: #f5f7fa; border-radius: 8px; margin-bottom: 8px; cursor: pointer;';
+                div.innerHTML = `
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="font-weight: 600;">${device.name}</span>
+                        <span style="color: #666; font-size: 12px;">RSSI: ${device.rssi}</span>
+                    </div>
+                `;
+                div.onclick = () => connectDevice(device.name);
+                deviceList.appendChild(div);
+            });
+            
+            document.getElementById('iot-devices').style.display = 'block';
+            
+            btn.disabled = false;
+            btn.textContent = 'Scan Devices';
+            
+            addLog(`Found ${devices.length} devices`);
+            showToast(`Found ${devices.length} devices`);
+        }, 2000);
+    }
+
+    function connectDevice(deviceName) {
+        addLog(`Connecting to ${deviceName}`);
+        showToast(`Connecting to ${deviceName}...`);
+        
+        setTimeout(() => {
+            state.connectedDevices.push(deviceName);
+            
+            setInterval(() => {
+                document.getElementById('accel-x').textContent = (Math.random() * 2 - 1).toFixed(2);
+                document.getElementById('accel-y').textContent = (Math.random() * 2 - 1).toFixed(2);
+                document.getElementById('accel-z').textContent = (Math.random() * 2 + 8.8).toFixed(2);
+                document.getElementById('heart-rate').textContent = Math.floor(Math.random() * 20 + 65);
+                
+                const activities = ['Standing', 'Walking', 'Running', 'Sitting'];
+                document.getElementById('activity').textContent = activities[Math.floor(Math.random() * activities.length)];
+            }, 2000);
+            
+            document.getElementById('sensor-data').style.display = 'block';
+            
+            addLog(`Connected to ${deviceName}`);
+            showToast(`Connected to ${deviceName}`);
+        }, 1000);
+    }
+
+    // Privacy Firewall
+    function runPrivacyAudit() {
+        addLog('Running privacy audit');
+        showToast('Auditing...');
+        
+        const btn = event.target;
+        btn.disabled = true;
+        btn.innerHTML = '<div class="loading-spinner"></div>';
+        
+        setTimeout(() => {
+            document.getElementById('privacy-result').style.display = 'block';
+            
+            btn.disabled = false;
+            btn.textContent = 'Run Privacy Audit';
+            
+            addLog('Privacy audit complete: no violations detected');
+            showToast('Privacy audit complete');
+        }, 1500);
+    }
+
+    // Initialize app
+    window.onload = init;
+</script>
+</body>
+</html>
